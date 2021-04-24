@@ -1,5 +1,5 @@
+import 'package:carrito_tul/src/presentation/pages/home_page.dart';
 import 'package:flutter/material.dart';
-import 'package:carrito_tul/pages/home_page.dart';
 
 void main() => runApp(TulApp());
 
