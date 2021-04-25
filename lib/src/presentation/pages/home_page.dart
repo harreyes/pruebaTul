@@ -24,28 +24,19 @@ class _HomePageState extends State<HomePage> {
         title: Text("Productos"),
         actions: <Widget>[shoppingCartIcon(context)],
       ),
-      body: StreamBuilder(
+      body: StreamBuilder<QuerySnapshot>(
         stream: Firestore.instance.collection("products").snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          List<DocumentSnapshot> docs = snapshot.data.documents;
-
-          return Container(
-            // height: 300.0, // Change as per your requirement
-            // width: 500.0,
-            child: ListView.builder(
-              itemCount: docs.length,
-              itemBuilder: (_, i) {
-                Map<String, dynamic> data = docs[i].data;
-                print('-___-');
-                print(data);
-                print(data);
-                return SingleChildScrollView(
-                  child: Container(
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+              return new Text('Loading...');
+            default:
+              return new ListView(
+                children:
+                    snapshot.data.documents.map((DocumentSnapshot document) {
+                  print(document.reference.documentID);
+                  return Container(
                     margin: EdgeInsets.all(10),
                     height: 210,
                     decoration: BoxDecoration(
@@ -60,56 +51,57 @@ class _HomePageState extends State<HomePage> {
                     ),
                     child: Column(
                       children: [
-                        ListTile(
-                          title: Text(
-                            data['nombre'],
+                        new ListTile(
+                          title: new Text(
+                            document['nombre'],
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          subtitle: Text(data['descripcion']),
+                          subtitle: new Text(
+                            document['descripcion'],
+                            style: TextStyle(fontWeight: FontWeight.w500),
+                          ),
                         ),
                         Container(
-                            width: 330,
-                            height: 130,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                // PinchZoom(
-                                //   image:
-                                Image.network(
-                                  data['img'],
-                                  height: 125,
-                                ),
-                                //   zoomedBackgroundColor:
-                                //       Colors.black.withOpacity(0.5),
-                                //   resetDuration:
-                                //       const Duration(milliseconds: 100),
-                                //   maxScale: 2.5,
-                                //   onZoomStart: () {
-                                //     print('Start zooming');
-                                //   },
-                                //   onZoomEnd: () {
-                                //     print('Stop zooming');
-                                //   },
-                                // ),
-                                RaisedButton.icon(
-                                    color: Colors.green,
-                                    onPressed: () {
-                                      // print(data[i]);
-                                    },
-                                    icon: Icon(Icons.add, color: Colors.white),
-                                    label: Text(
-                                      'Añadir producto',
-                                      style: TextStyle(color: Colors.white),
-                                    ))
-                              ],
-                            )),
+                          margin: EdgeInsets.only(right: 20, left: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              // PinchZoom(
+                              //   image:
+                              Image.network(
+                                document['img'],
+                                height: 130,
+                              ),
+                              //   zoomedBackgroundColor:
+                              //       Colors.black.withOpacity(0.5),
+                              //   resetDuration: const Duration(milliseconds: 100),
+                              //   maxScale: 2.5,
+                              //   onZoomStart: () {
+                              //     print('Start zooming');
+                              //   },
+                              //   onZoomEnd: () {
+                              //     print('Stop zooming');
+                              //   },
+                              // ),
+                              RaisedButton.icon(
+                                  color: Colors.green,
+                                  onPressed: () {
+                                    print(document.reference.documentID);
+                                  },
+                                  icon: Icon(Icons.add, color: Colors.white),
+                                  label: Text(
+                                    'Añadir producto',
+                                    style: TextStyle(color: Colors.white),
+                                  ))
+                            ],
+                          ),
+                        )
                       ],
                     ),
-                  ),
-                );
-              },
-            ),
-          );
+                  );
+                }).toList(),
+              );
+          }
         },
       ),
     );
@@ -130,37 +122,30 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Stream<List<Product>> _data() async {
-  //   List<Product> lista = await DBServicePockets.db.obtenerDatos();
-  //   // if (lista.length == 0) {
-  //   //   Navigator.pushNamed(context, 'pockets_step1');
-  //   // }
-  //   return lista;
-  // }
+  void getData() {
+    databaseReference
+        .collection("products")
+        .getDocuments()
+        .then((QuerySnapshot snapshot) {
+      snapshot.documents
+          .forEach((f) => print('${f.data}}' + '${f.reference.documentID}}'));
+    });
 
-  // void getData() async {
-  //   databaseReference
-  //       .collection("products")
-  //       .getDocuments()
-  //       .then((QuerySnapshot snapshot) {
-  //     snapshot.documents
-  //         .forEach((f) => print('${f.data}}' + '${f.reference.documentID}}'));
-  //   });
+    // var doc_ref = await Firestore.instance
+    //     .collection("board")
+    //     .document(doc_id)
+    //     .collection("products")
+    //     .getDocuments();
+    // doc_ref.documents.forEach((result) {
+    //   print("--------------");
+    //   print(result.documentID);
 
-  // var doc_ref = await Firestore.instance
-  //     .collection("board")
-  //     .document(doc_id)
-  //     .collection("products")
-  //     .getDocuments();
-  // doc_ref.documents.forEach((result) {
-  //   print("--------------");
-  //   print(result.documentID);
-
-  // Firestore.instance.collection('products').getDocuments().then(
-  //       (QuerySnapshot snapshot) => {
-  //         snapshot.documents.forEach((f) {
-  //           print("documentID---- " + f.reference.documentID);
-  //         }),
-  //       },
-  //     );
+//  var a = Firestore.instance.collection('products').getDocuments().then(
+//         (QuerySnapshot snapshot) => {
+//           snapshot.documents.forEach((f) {
+//             print("documentID---- " + f.reference.documentID);
+//           }),
+//         },
+//       );
+  }
 }
