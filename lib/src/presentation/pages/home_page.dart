@@ -1,28 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:pinch_zoom/pinch_zoom.dart';
 
-class HomePage extends StatefulWidget {
-  @override
-  _HomePageState createState() => _HomePageState();
-}
+import 'package:carrito_tul/src/presentation/widgets/shopping_cart.dart';
 
-class _HomePageState extends State<HomePage> {
-  final databaseReference = Firestore.instance;
+import 'package:carrito_tul/src/bloc/cart/cart_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-  int number = 0;
-  // @override
-  // void initState() {
-  //   getData();
-  //   super.initState();
-  // }
-
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final cartBloc = BlocProvider.of<CartBloc>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Productos"),
-        actions: <Widget>[shoppingCartIcon(context)],
+        actions: <Widget>[ShoppingCartIcon()],
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: Firestore.instance.collection("products").snapshots(),
@@ -35,7 +27,7 @@ class _HomePageState extends State<HomePage> {
               return new ListView(
                 children:
                     snapshot.data.documents.map((DocumentSnapshot document) {
-                  print(document.reference.documentID);
+                  // print(document.reference.documentID);
                   return Container(
                     margin: EdgeInsets.all(10),
                     height: 210,
@@ -66,29 +58,29 @@ class _HomePageState extends State<HomePage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              // PinchZoom(
-                              //   image:
                               Image.network(
                                 document['img'],
                                 height: 130,
                               ),
-                              //   zoomedBackgroundColor:
-                              //       Colors.black.withOpacity(0.5),
-                              //   resetDuration: const Duration(milliseconds: 100),
-                              //   maxScale: 2.5,
-                              //   onZoomStart: () {
-                              //     print('Start zooming');
-                              //   },
-                              //   onZoomEnd: () {
-                              //     print('Stop zooming');
-                              //   },
-                              // ),
                               RaisedButton.icon(
                                   color: Colors.green,
-                                  onPressed: () {
-                                    print(document.reference.documentID);
+                                  onPressed: () async {
+                                    // if (cartBloc. == '') {
+                                    //   DocumentReference docRef = await Firestore
+                                    //       .instance
+                                    //       .collection('carts')
+                                    //       .add({'status': 'pending'});
+                                    //   print(docRef.documentID);
+                                    //   cartBloc
+                                    //       .add(SetIdCart(docRef.documentID));
+                                    //   cartBloc.add(AddCart(0));
+                                    // } else {
+                                    //   cartBloc.add(AddCart(0));
+                                    // }
+                                    // print(document.reference.documentID);
                                   },
-                                  icon: Icon(Icons.add, color: Colors.white),
+                                  icon: Icon(Icons.add_shopping_cart,
+                                      color: Colors.white),
                                   label: Text(
                                     'Añadir producto',
                                     style: TextStyle(color: Colors.white),
@@ -105,47 +97,5 @@ class _HomePageState extends State<HomePage> {
         },
       ),
     );
-  }
-
-  Widget shoppingCartIcon(BuildContext context) {
-    // Using Stack to show Notification Badge
-    return Stack(
-      children: <Widget>[
-        IconButton(
-          icon: Icon(Icons.shopping_cart),
-          onPressed: () {
-            Scaffold.of(context).openEndDrawer();
-          },
-        ),
-        Text('($number)')
-      ],
-    );
-  }
-
-  void getData() {
-    databaseReference
-        .collection("products")
-        .getDocuments()
-        .then((QuerySnapshot snapshot) {
-      snapshot.documents
-          .forEach((f) => print('${f.data}}' + '${f.reference.documentID}}'));
-    });
-
-    // var doc_ref = await Firestore.instance
-    //     .collection("board")
-    //     .document(doc_id)
-    //     .collection("products")
-    //     .getDocuments();
-    // doc_ref.documents.forEach((result) {
-    //   print("--------------");
-    //   print(result.documentID);
-
-//  var a = Firestore.instance.collection('products').getDocuments().then(
-//         (QuerySnapshot snapshot) => {
-//           snapshot.documents.forEach((f) {
-//             print("documentID---- " + f.reference.documentID);
-//           }),
-//         },
-//       );
   }
 }
