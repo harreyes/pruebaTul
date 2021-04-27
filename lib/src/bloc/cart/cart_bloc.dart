@@ -17,8 +17,6 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     if (event is OnAddCart) {
       final prod = List<QueryDocumentSnapshot>.from(state.listProducts)
         ..add(event.product);
-      // await FirebaseFirestore.instance.collection('product_carts').add(
-      //     {'cart_id': 'zQU8DvyzljvclLCYmIIY', 'product_id': event.product.id});
       yield state.copyWith(listProducts: prod, countCart: prod.length);
     } else if (event is OnRemoveCart) {
       final prod = List<QueryDocumentSnapshot>.from(state.listProducts)

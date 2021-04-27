@@ -12,11 +12,11 @@ class CartState {
       this.products});
 
   CartState copyWith(
-          {QueryDocumentSnapshot productos,
+          {QueryDocumentSnapshot products,
           List<QueryDocumentSnapshot> listProducts,
           num countCart}) =>
       CartState(
-          products: productos ?? this.products,
+          products: products ?? products,
           listProducts: listProducts ?? this.listProducts,
           countCart: countCart ?? this.countCart);
 }

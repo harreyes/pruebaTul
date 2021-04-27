@@ -11,23 +11,28 @@ class ConfirmCartPage extends StatelessWidget {
             appBar: AppBar(
               title: Text('Carrito'),
             ),
-            body: Center(
+            body: Container(
+              margin: EdgeInsets.only(top:10),
               child: ListView.builder(
                   itemCount: state.listProducts.length,
                   itemBuilder: (_, index) {
-                    final List ids = [];
-                    ids.add(state.listProducts[index].id);
-                    print(ids);
                     return ListTile(
-                      leading: Image.network(
-                        state.listProducts[index]['img'],
+                      leading: Container(
+                        width: 50,
                         height: 50,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20.0),
+                          child: Image.network(
+                            state.listProducts[index]['img'],
+                            fit: BoxFit.cover,
+                            // height: 50,
+                          ),
+                        ),
                       ),
                       title: Text(state.listProducts[index]['nombre']),
                       trailing: IconButton(
-                        icon: Icon(Icons.remove),
+                        icon: Icon(Icons.delete_forever),
                         onPressed: () {
-                          print('remove');
                           BlocProvider.of<CartBloc>(context)
                               .add(OnRemoveCart(state.listProducts[index]));
                         },

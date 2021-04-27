@@ -22,16 +22,16 @@ class Product {
   String sku;
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
-        id: json["id"],
-        descripcion: json["descripcion"],
-        nombre: json["nombre"],
-        sku: json["sku"],
+        id: json['id'],
+        descripcion: json['descripcion'],
+        nombre: json['nombre'],
+        sku: json['sku'],
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "descripcion": descripcion,
-        "nombre": nombre,
-        "sku": sku,
+        'id': id,
+        'descripcion': descripcion,
+        'nombre': nombre,
+        'sku': sku,
       };
 }

@@ -30,7 +30,7 @@ class ShoppingCartIcon extends StatelessWidget {
       barrierDismissible: false, // user must tap button!
       builder: (context) {
         return AlertDialog(
-          title: Text('Exitoso'),
+          title: Text('¡Alerta!'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
