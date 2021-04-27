@@ -3,17 +3,16 @@ part of 'cart_bloc.dart';
 @immutable
 abstract class CartEvent {}
 
-class AddCart extends CartEvent {
-  final num number;
-
-  AddCart(this.number);
+class OnConfirmCart extends CartEvent {
+  OnConfirmCart();
 }
 
-class ConfirmCart extends CartEvent {
-  ConfirmCart();
+class OnAddCart extends CartEvent {
+  final QueryDocumentSnapshot product;
+  OnAddCart(this.product);
 }
 
-class SetIdCart extends CartEvent {
-  final String docId;
-  SetIdCart(this.docId);
+class OnRemoveCart extends CartEvent {
+  final QueryDocumentSnapshot product;
+  OnRemoveCart(this.product);
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 
 part 'cart_event.dart';
@@ -13,12 +14,27 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   Stream<CartState> mapEventToState(
     CartEvent event,
   ) async* {
-    if (event is AddCart) {
-      yield CartState(countCart: state.countCart + 1);
-    } else if (event is ConfirmCart) {
-      yield CartState(countCart: 0);
-    } else if (event is SetIdCart) {
-      yield CartState(docId: event.docId);
+    if (event is OnAddCart) {
+      final prod = List<QueryDocumentSnapshot>.from(state.listProducts)
+        ..add(event.product);
+      // await FirebaseFirestore.instance.collection('product_carts').add(
+      //     {'cart_id': 'zQU8DvyzljvclLCYmIIY', 'product_id': event.product.id});
+      yield state.copyWith(listProducts: prod, countCart: prod.length);
+    } else if (event is OnRemoveCart) {
+      final prod = List<QueryDocumentSnapshot>.from(state.listProducts)
+        ..remove(event.product);
+      // await FirebaseFirestore.instance
+      //     .collection('product_carts')
+      //     .doc(event.product.id)
+      //     .delete();
+      yield state.copyWith(listProducts: prod, countCart: prod.length);
+    } else if (event is OnConfirmCart) {
+      state.listProducts.forEach((element) {
+        FirebaseFirestore.instance
+            .collection('product_carts')
+            .add({'cart_id': 'zQU8DvyzljvclLCYmIIY', 'product_id': element.id});
+      });
+      yield CartState(listProducts: const []);
     }
   }
 }

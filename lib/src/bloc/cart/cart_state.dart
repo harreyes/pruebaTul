@@ -3,6 +3,20 @@ part of 'cart_bloc.dart';
 class CartState {
   final num countCart;
   final String stateCart;
-  final String docId;
-  CartState({this.countCart = 0, this.stateCart, this.docId = ''});
+  final QueryDocumentSnapshot products;
+  final List<QueryDocumentSnapshot> listProducts;
+  CartState(
+      {this.countCart = 0,
+      this.stateCart,
+      this.listProducts = const [],
+      this.products});
+
+  CartState copyWith(
+          {QueryDocumentSnapshot productos,
+          List<QueryDocumentSnapshot> listProducts,
+          num countCart}) =>
+      CartState(
+          products: productos ?? this.products,
+          listProducts: listProducts ?? this.listProducts,
+          countCart: countCart ?? this.countCart);
 }

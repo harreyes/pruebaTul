@@ -11,7 +11,7 @@ class ShoppingCartIcon extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.shopping_cart),
             onPressed: () {
-              if (state.docId == '' && state.countCart == 0) {
+              if (state.countCart == 0) {
                 _alert(context);
               } else {
                 Navigator.pushNamed(context, 'confirmCartPage');
